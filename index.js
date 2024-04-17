@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
  const app = express();
  const port = process.env.PORT || 5000;
- const { MongoClient, ServerApiVersion } = require('mongodb');
+ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
  require('dotenv').config();
  
  //middleware
@@ -28,12 +28,20 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
 const collegeListCollection = client.db('College-Pods').collection('collegeList');
-
+//API to get all colleges
 app.get('/collegeList',async(req,res) =>{
     const query = {};
     const lists = await collegeListCollection.find(query).toArray();
     res.send(lists);
-})
+});
+//API to get Specific college details
+  app.get('/details/:id',async(req,res)=>{
+    const id = req.params.id;
+    const query = {_id:new ObjectId(id)};
+    const cursor = collegeListCollection.find(query);
+    const details = await cursor.toArray();
+    res.send(details)
+  })
     }finally{
 
     }
