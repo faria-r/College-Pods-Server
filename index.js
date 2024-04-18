@@ -28,10 +28,24 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
 const collegeListCollection = client.db('College-Pods').collection('collegeList');
+const admissionInfoCollection = client.db('College-Pods').collection('admissionInfo');
 //API to get all colleges
 app.get('/collegeList',async(req,res) =>{
     const query = {};
     const lists = await collegeListCollection.find(query).toArray();
+    res.send(lists);
+});
+//API to get Popular Colleges for admission 
+app.get('/admission',async(req,res) =>{
+    const query = {age:5};
+    const lists = await collegeListCollection.find(query).toArray();
+    res.send(lists);
+});
+app.get('/admission/:id',async(req,res) =>{
+    const id = req.params.id;
+    const query = {_id:new ObjectId(id)};
+    const cursor = collegeListCollection.find(query);
+    const lists = await cursor.toArray();
     res.send(lists);
 });
 //API to get Specific college details
@@ -41,7 +55,16 @@ app.get('/collegeList',async(req,res) =>{
     const cursor = collegeListCollection.find(query);
     const details = await cursor.toArray();
     res.send(details)
-  })
+  });
+//   API to post admission info in server 
+  app.post('http://localhost:5000/admissionInfo',async(req,res)=>{
+    const admissionInfo= req.body;
+    const result = await admissionInfoCollection.insertOne(admissionInfo);
+    res.send(result)
+  
+  });
+
+
     }finally{
 
     }
