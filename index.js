@@ -29,6 +29,7 @@ async function run(){
     try{
 const collegeListCollection = client.db('College-Pods').collection('collegeList');
 const admissionInfoCollection = client.db('College-Pods').collection('admissionInfo');
+const reviewInfoCollection = client.db('College-Pods').collection('reviewInfo');
 //API to get all colleges
 app.get('/collegeList',async(req,res) =>{
     const query = {};
@@ -57,10 +58,36 @@ app.get('/admission/:id',async(req,res) =>{
     res.send(details)
   });
 //   API to post admission info in server 
-  app.post('http://localhost:5000/admissionInfo',async(req,res)=>{
+  app.post('/admissionInfo',async(req,res)=>{
     const admissionInfo= req.body;
     const result = await admissionInfoCollection.insertOne(admissionInfo);
-    res.send(result)
+    res.send(result);
+    console.log(admissionInfo,'data')
+  
+  });
+  //API to get my colleges
+  app.get('/myCollege',async(req,res) =>{
+const query = {};
+const cursor = admissionInfoCollection.find(query);
+const myColleges = await cursor.toArray();
+res.send(myColleges)
+  });
+
+  //API for college Review
+  app.get('/myCollege/:id', async(req,res)=>{
+    const id = req.params.id;
+    const query = {_id:new ObjectId(id)};
+    const cursor = admissionInfoCollection.find(query);
+    const college = await cursor.toArray();
+    res.send(college)
+  });
+
+  //   API to post Review info in server 
+  app.post('/reviewInfo',async(req,res)=>{
+    const reviewInfo= req.body;
+    const result = await reviewInfoCollection.insertOne(reviewInfo);
+    res.send(result);
+    console.log(reviewInfo,'data')
   
   });
 
