@@ -90,6 +90,13 @@ res.send(myColleges)
     console.log(reviewInfo,'data')
   
   });
+  //API to get all the reviews
+  app.get('/reviews',async(req,res)=>{
+    const query={};
+    const cursor = reviewInfoCollection.find(query);
+    const allReviews= await cursor.toArray();
+    res.send(allReviews)
+  })
 
 
     }finally{
