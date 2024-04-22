@@ -1,13 +1,25 @@
 const express = require('express');
 const cors = require('cors');
  const app = express();
- const port = process.env.PORT || 5000;
- const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
  require('dotenv').config();
+ 
+ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
  
  //middleware
  app.use(cors());
  app.use(express.json());
+ app.options('*', cors());
+
+
+ const port = process.env.PORT || 5000;
+ 
+//  {
+//   origin:[
+//     'https://collegepods-d1b1e.web.app/',
+//     'https://collegepods-d1b1e.firebaseapp.com/'
+//   ],
+//   credentials:true
+//  }
 
  //connect MongoDB
  
@@ -27,6 +39,8 @@ const client = new MongoClient(uri, {
 
 async function run(){
     try{
+
+      await client.connect();
 const collegeListCollection = client.db('College-Pods').collection('collegeList');
 const admissionInfoCollection = client.db('College-Pods').collection('admissionInfo');
 const reviewInfoCollection = client.db('College-Pods').collection('reviewInfo');
